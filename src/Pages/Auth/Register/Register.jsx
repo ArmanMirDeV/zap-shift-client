@@ -89,15 +89,30 @@ const Register = () => {
                 {...register("password", {
                   required: true,
                   minLength: 6,
+                  pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{6,}$/,
                 })}
                 type="password"
                 className="border mt-1 p-2 w-full rounded-md"
                 placeholder="Password"
               />
 
-              {errors.password && (
+              {/* Required */}
+              {errors.password?.type === "required" && (
+                <p className="text-red-500 text-sm">Password is required.</p>
+              )}
+
+              {/* Min Length */}
+              {errors.password?.type === "minLength" && (
                 <p className="text-red-500 text-sm">
-                  Password must be at least 6 characters.
+                  Password must be at least 6 characters long.
+                </p>
+              )}
+
+              {/* Pattern */}
+              {errors.password?.type === "pattern" && (
+                <p className="text-red-500 text-sm">
+                  Password must contain at least 1 uppercase, 1 lowercase, and 1
+                  special symbol.
                 </p>
               )}
             </div>
@@ -110,7 +125,7 @@ const Register = () => {
         </form>
 
         {/* Login link under button */}
-        <Link to='/login' >
+        <Link to="/login">
           <div className="text-center mt-4 text-gray-600">
             Already have an account?{" "}
             <span className="text-blue-600 hover:underline cursor-pointer">
