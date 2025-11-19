@@ -2,6 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import useAuth from "../../../Hooks/useAuth";
 import { Link } from "react-router";
+import SocialLogin from "../SocialLogin/SocialLogin";
 
 const Register = () => {
   const {
@@ -134,18 +135,10 @@ const Register = () => {
           </div>
         </Link>
 
-        {/* Divider */}
-        <div className="text-center my-4 text-gray-500">Or</div>
+       
 
         {/* Google Button */}
-        <button className="w-full flex items-center justify-center gap-3 bg-gray-100 border border-gray-300 py-2 rounded-md hover:bg-gray-200 transition">
-          <img
-            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-            alt="Google logo"
-            className="w-5 h-5"
-          />
-          Register with Google
-        </button>
+        <SocialLogin />
       </div>
     </div>
   );
