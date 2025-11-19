@@ -1,15 +1,26 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import useAuth from "../../../Hooks/useAuth";
+import { Link } from "react-router";
 
 const Register = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+    } = useForm();
+    
+    const { registerUser } = useAuth();
 
   const handleRegistration = (data) => {
-    console.log(data);
+      console.log(data);
+      registerUser(data.email, data.password)
+        .then((result) => {
+          console.log(result.user);
+        })
+        .catch((errors) => {
+          console.log(errors);
+        });
   };
 
   return (
@@ -99,12 +110,14 @@ const Register = () => {
         </form>
 
         {/* Login link under button */}
-        <div className="text-center mt-4 text-gray-600">
-          Already have an account?{" "}
-          <span className="text-blue-600 hover:underline cursor-pointer">
-            Login
-          </span>
-        </div>
+        <Link to='/login' >
+          <div className="text-center mt-4 text-gray-600">
+            Already have an account?{" "}
+            <span className="text-blue-600 hover:underline cursor-pointer">
+              Login
+            </span>
+          </div>
+        </Link>
 
         {/* Divider */}
         <div className="text-center my-4 text-gray-500">Or</div>
