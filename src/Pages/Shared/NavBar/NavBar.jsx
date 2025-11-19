@@ -2,6 +2,7 @@ import React from "react";
 import Logo from "../../../Components/Logo/Logo";
 import { Link, NavLink } from "react-router";
 import useAuth from "../../../Hooks/useAuth";
+import { FiArrowUpRight } from "react-icons/fi";
 
 const NavBar = () => {
 
@@ -73,8 +74,23 @@ const NavBar = () => {
           <ul className="menu menu-horizontal px-1">{links}</ul>
         </div>
         <div className="navbar-end">
-          {user ? <a onClick={handleLogOut} className="btn">Log out</a> : <Link to='/login' className="btn">Login</Link>}
+          {user ? (
+            <a onClick={handleLogOut} className="btn rounded-4xl">
+              Log out
+            </a>
+          ) : (
+            <Link to="/login" className="btn rounded-4xl">
+              Login
+            </Link>
+          )}
         </div>
+        <Link to="/" className="btn rounded-4xl text-black mx-4 btn-primary">
+          Be a Rider{" "}
+          <span className="bg-black text-white rounded-full p-1">
+            {" "}
+            <FiArrowUpRight />
+          </span>
+        </Link>
       </div>
     </div>
   );

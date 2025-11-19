@@ -3,25 +3,55 @@ import { useForm } from "react-hook-form";
 import useAuth from "../../../Hooks/useAuth";
 import { Link } from "react-router";
 import SocialLogin from "../SocialLogin/SocialLogin";
+import axios from "axios";
 
 const Register = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-    } = useForm();
-    
-    const { registerUser } = useAuth();
+  } = useForm();
+
+  const { registerUser, updateUserProfile } = useAuth();
 
   const handleRegistration = (data) => {
-      console.log(data);
-      registerUser(data.email, data.password)
-        .then((result) => {
-          console.log(result.user);
-        })
-        .catch((errors) => {
-          console.log(errors);
-        });
+    console.log(data);
+    const profileImg = data.photo[0];
+
+    registerUser(data.email, data.password)
+      .then((result) => {
+        console.log(result.user);
+        // store the image in form data
+          const formData = new FormData();
+          
+        formData.append("image", profileImg);
+
+        const imageAPI_URL = `https://api.imgbb.com/1/upload?&key=${
+          import.meta.env.VITE_img_host_key
+        }`;
+
+          axios.post(imageAPI_URL, formData)
+              .then(res => {
+                console.log("After Image Upload", res.data.data.url);
+
+                const userProfile = {
+                  displayName: data.name,
+                  photoURL: res.data.data.url,
+                  };
+                  
+
+
+                // update user profile here
+
+                updateUserProfile(userProfile)
+                  .then()
+                  .catch((error) => console.log(error));
+              })
+
+      })
+      .catch((errors) => {
+        console.log(errors);
+      });
   };
 
   return (
@@ -32,25 +62,6 @@ const Register = () => {
           Create an Account
         </h1>
         <p className="text-gray-600 text-center mb-6">Register with ZapShift</p>
-
-        {/* Profile Icon */}
-        <div className="flex justify-center mb-6">
-          <div className="w-16 h-16 rounded-full bg-gray-100 border flex items-center justify-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="32"
-              viewBox="0 -960 960 960"
-              width="32"
-              fill="#9ca3af"
-            >
-              <path
-                d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 
-              47t47 113q0 66-47 113t-113 47Zm0 60q93 0 162.5 51.5T720-240q0 
-              18-12 29t-30 11H282q-18 0-30-11t-12-29q0-93 69.5-156.5T480-420Z"
-              />
-            </svg>
-          </div>
-        </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit(handleRegistration)}>
@@ -66,6 +77,19 @@ const Register = () => {
               />
               {errors.name && (
                 <p className="text-red-500 text-sm">Name is required.</p>
+              )}
+            </div>
+            {/* Photo field */}
+            <div>
+              <label className="font-medium">Photo</label>
+              <input
+                {...register("photo", { required: true })}
+                type="file"
+                className="border file-input mt-1 p-2 w-full rounded-md"
+                placeholder="Your Photo"
+              />
+              {errors.name && (
+                <p className="text-red-500 text-sm">Photo is required.</p>
               )}
             </div>
 
@@ -134,8 +158,6 @@ const Register = () => {
             </span>
           </div>
         </Link>
-
-       
 
         {/* Google Button */}
         <SocialLogin />
