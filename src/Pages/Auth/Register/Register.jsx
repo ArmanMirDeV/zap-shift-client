@@ -1,11 +1,14 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import useAuth from "../../../Hooks/useAuth";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import SocialLogin from "../SocialLogin/SocialLogin";
 import axios from "axios";
 
 const Register = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -22,32 +25,30 @@ const Register = () => {
       .then((result) => {
         console.log(result.user);
         // store the image in form data
-          const formData = new FormData();
-          
+        const formData = new FormData();
+
         formData.append("image", profileImg);
 
         const imageAPI_URL = `https://api.imgbb.com/1/upload?&key=${
           import.meta.env.VITE_img_host_key
         }`;
 
-          axios.post(imageAPI_URL, formData)
-              .then(res => {
-                console.log("After Image Upload", res.data.data.url);
+        axios.post(imageAPI_URL, formData).then((res) => {
+          console.log("After Image Upload", res.data.data.url);
 
-                const userProfile = {
-                  displayName: data.name,
-                  photoURL: res.data.data.url,
-                  };
-                  
+          const userProfile = {
+            displayName: data.name,
+            photoURL: res.data.data.url,
+          };
 
+          // update user profile here
 
-                // update user profile here
-
-                updateUserProfile(userProfile)
-                  .then()
-                  .catch((error) => console.log(error));
-              })
-
+          updateUserProfile(userProfile)
+              .then(() => {
+               navigate(location.state || "/") 
+            })
+            .catch((error) => console.log(error));
+        });
       })
       .catch((errors) => {
         console.log(errors);
@@ -150,7 +151,7 @@ const Register = () => {
         </form>
 
         {/* Login link under button */}
-        <Link to="/login">
+        <Link state={location.state} to="/login">
           <div className="text-center mt-4 text-gray-600">
             Already have an account?{" "}
             <span className="text-blue-600 hover:underline cursor-pointer">
