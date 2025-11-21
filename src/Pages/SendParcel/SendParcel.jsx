@@ -1,12 +1,12 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useLoaderData } from "react-router";
 
 const SendParcel = () => {
   const {
     register,
     handleSubmit,
-    watch,
+control,
     formState: { errors },
   } = useForm();
 
@@ -15,16 +15,16 @@ const SendParcel = () => {
 
   const regions = [...new Set(regionsDuplicate)];
 
-  const senderRegion = watch('senderRegion');
+  const senderRegion = useWatch({ control, name: 'senderRegion'});
+  const receiverRegion = useWatch({ control, name: 'receiverRegion'});
 
   const districtsByRegion = region => {
-    const regionDisctrict = serviceCenters.filter(c => c.region === region)
-    const districts = regionDisctrict.map(d => d.district)
+    const regionDistrict = serviceCenters.filter(c => c.region === region)
+    const districts = regionDistrict.map(d => d.district)
 
     return districts;
   }
 
-  console.log(regions);
   
 
   const handleSendParcel = (data) => {
@@ -230,24 +230,47 @@ const SendParcel = () => {
               />
             </div>
 
+            {/* Receiver Region */}
             <div className="form-control mb-4">
-              {/*  Receiver District  */}
-
-              <label className="label">Receiver District</label>
-              <select
-                className="select select-bordered w-full"
-                {...register("receiverDistrict")}
-              >
-                <option value="">Select District</option>
-                <option value="Dhaka">Dhaka</option>
-                <option value="Chittagong">Chittagong</option>
-                <option value="Sylhet">Sylhet</option>
-              </select>
+              <fieldset className="fieldset">
+                <legend className="fieldset-legend">Receiver Regions</legend>
+                <select
+                  {...register("receiverRegion")}
+                  defaultValue="Pick a Region "
+                  className="select w-full"
+                >
+                  <option disabled={true}>Pick a Region</option>
+                  {regions.map((r, i) => (
+                    <option key={i} value={r}>
+                      {r}
+                    </option>
+                  ))}
+                </select>
+              </fieldset>
             </div>
 
-            <div className="form-control">
-              {/* Receiver Instructions */}
+            {/* Receiver Districts */}
+            <div className="form-control mb-4">
+              <fieldset className="fieldset">
+                <legend className="fieldset-legend">Receiver Districts</legend>
+                <select
+                  {...register("receiverDistrict")}
+                  defaultValue="Pick a Districts "
+                  className="select w-full"
+                >
+                  <option disabled={true}>Pick a District</option>
+                  {districtsByRegion(receiverRegion).map((d, i) => (
+                    <option key={i} value={d}>
+                      {d}
+                    </option>
+                  ))}
+                </select>
+              </fieldset>
+            </div>
 
+            {/* Receiver Instructions */}
+
+            <div className="form-control">
               <label className="label">Delivery Instruction</label>
               <textarea
                 className="textarea textarea-bordered w-full"
