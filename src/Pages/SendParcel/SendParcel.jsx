@@ -2,50 +2,52 @@ import React from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { useLoaderData } from "react-router";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
+import useAuth from "../../Hooks/useAuth";
 
 const SendParcel = () => {
   const {
     register,
     handleSubmit,
-control,
-    formState: { errors },
+    control,
+    // formState: { errors },
   } = useForm();
 
+  const {user} = useAuth()
+  const axiosSecure = useAxiosSecure();
+
   const serviceCenters = useLoaderData();
-  const regionsDuplicate= serviceCenters.map(c => c.region)
+  const regionsDuplicate = serviceCenters.map((c) => c.region);
 
   const regions = [...new Set(regionsDuplicate)];
 
-  const senderRegion = useWatch({ control, name: 'senderRegion'});
-  const receiverRegion = useWatch({ control, name: 'receiverRegion'});
+  const senderRegion = useWatch({ control, name: "senderRegion" });
+  const receiverRegion = useWatch({ control, name: "receiverRegion" });
 
-  const districtsByRegion = region => {
-    const regionDistrict = serviceCenters.filter(c => c.region === region)
-    const districts = regionDistrict.map(d => d.district)
+  const districtsByRegion = (region) => {
+    const regionDistrict = serviceCenters.filter((c) => c.region === region);
+    const districts = regionDistrict.map((d) => d.district);
 
     return districts;
-  }
-
-  
+  };
 
   const handleSendParcel = (data) => {
-
-    const isDocument = data.parcelType === 'document';
+    const isDocument = data.parcelType === "document";
     const isSameDistrict = data.senderDistrict === data.receiverDistrict;
     const parcelWeight = parseFloat(data.parcelWeight);
 
     let cost = 0;
     if (isDocument) {
       cost = isSameDistrict ? 60 : 80;
-    }
-    else {
+    } else {
       if (parcelWeight < 3) {
         cost = isSameDistrict ? 100 : 150;
-      }
-      else {
+      } else {
         const minCharge = isSameDistrict ? 110 : 150;
         const extraWeight = parcelWeight - 3;
-        const extraCharge = isSameDistrict ? extraWeight * 40 : extraWeight * 40 + 40;
+        const extraCharge = isSameDistrict
+          ? extraWeight * 40
+          : extraWeight * 40 + 40;
 
         cost = minCharge + extraCharge;
       }
@@ -62,10 +64,11 @@ control,
       confirmButtonText: "Send Parcel",
     }).then((result) => {
       if (result.isConfirmed) {
+        // Save the Parcel info  to the database
 
-
-        // 
-
+        axiosSecure.post("/parcels", data).then((res) => {
+          console.log('after saving parcel', res.data);
+        });
 
         // Swal.fire({
         //   title: "Succeeded!",
@@ -74,10 +77,6 @@ control,
         // });
       }
     });
-
-    
-
-
   };
 
   return (
@@ -146,6 +145,7 @@ control,
             <div className="form-control mb-4">
               <label className="label">Sender Name</label>
               <input
+                defaultValue={user?.displayName}
                 type="text"
                 className="input input-bordered w-full"
                 {...register("senderName")}
@@ -156,6 +156,7 @@ control,
               <label className="label">Sender Email</label>
               <input
                 type="email"
+                defaultValue={user?.email}
                 className="input input-bordered w-full"
                 {...register("senderEmail")}
               />
