@@ -6,7 +6,7 @@ import { FiEdit } from "react-icons/fi";
 import { HiMagnifyingGlassPlus } from "react-icons/hi2";
 import { FaTrashCan } from "react-icons/fa6";
 import Swal from "sweetalert2";
-
+import { Link } from "react-router";
 
 const MyParcels = () => {
   const axiosSecure = useAxiosSecure();
@@ -18,7 +18,6 @@ const MyParcels = () => {
       return res.data;
     },
   });
-
 
   const handleParcelDelete = (id) => {
     console.log(id);
@@ -32,29 +31,21 @@ const MyParcels = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-
-        axiosSecure.delete(`/parcels/${id}`)
-          .then(res => {
-            console.log(res.data);
-            if (res.data.deletedCount) {
-              // refresh the data in the UI after delete
-              refetch();
-              Swal.fire({
-                title: "Deleted!",
-                text: "Your Parcel request  has been deleted.",
-                icon: "success",
-              });
-            }
-        
-        })
-
-
-      
+        axiosSecure.delete(`/parcels/${id}`).then((res) => {
+          console.log(res.data);
+          if (res.data.deletedCount) {
+            // refresh the data in the UI after delete
+            refetch();
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your Parcel request  has been deleted.",
+              icon: "success",
+            });
+          }
+        });
       }
     });
-    
-  }
-
+  };
 
   return (
     <div>
@@ -68,6 +59,7 @@ const MyParcels = () => {
               <th>Name</th>
               <th>Cost</th>
               <th>Payment Status</th>
+              <th>Delivery Status</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -77,7 +69,16 @@ const MyParcels = () => {
                 <th>{index + 1}</th>
                 <td>{parcel.parcelName}</td>
                 <td>{parcel.cost}</td>
-                <td>Blue</td>
+                <td>
+                  {parcel.paymentStatus === "paid" ? (
+                    <span className="text-green-800">Paid</span>
+                  ) : (
+                    <Link to={`/dashboard/payment/${parcel._id}`}> 
+                      <button className="btn btn-primary btn-sm text-black">Proceed to Pay</button>
+                    </Link>
+                  )}
+                </td>
+                <td>{parcel.deliveryStatus}</td>
                 <td className="gap-2 flex">
                   <button className="btn btn-square hover:bg-primary">
                     <FiEdit />
@@ -85,7 +86,10 @@ const MyParcels = () => {
                   <button className="btn btn-square hover:bg-primary">
                     <HiMagnifyingGlassPlus />
                   </button>
-                  <button onClick={ () => handleParcelDelete(parcel._id)} className="btn btn-square hover:bg-primary">
+                  <button
+                    onClick={() => handleParcelDelete(parcel._id)}
+                    className="btn btn-square hover:bg-primary"
+                  >
                     <FaTrashCan />
                   </button>
                 </td>
