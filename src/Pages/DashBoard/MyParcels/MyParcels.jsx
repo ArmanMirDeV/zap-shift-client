@@ -52,14 +52,16 @@ const MyParcels = () => {
       cost: parcel.cost,
       parcelId: parcel._id,
       senderEmail: parcel.senderEmail,
-      parcelName:  parcel.parcelName
-    }
+      parcelName: parcel.parcelName,
+    };
 
-    const res = await axiosSecure.post('/payment-checkout-session', paymentInfo)
+    const res = await axiosSecure.post(
+      "/payment-checkout-session",
+      paymentInfo
+    );
     console.log(res.data.url);
-    
-    window.location.href = res.data.url;
 
+    window.location.assign(res.data.url);
   };
 
   return (
