@@ -1,5 +1,6 @@
 import React from "react";
 import { FaHome } from "react-icons/fa";
+import { FaCreditCard } from "react-icons/fa6";
 import { TbTruckDelivery } from "react-icons/tb";
 
 import { Link, NavLink, Outlet } from "react-router";
@@ -71,8 +72,22 @@ const DashBoardLayout = () => {
               >
                 {" "}
                 <TbTruckDelivery className="my-1.5 inline-block size-4" />
+                <span className="is-drawer-close:hidden ">My Parcels</span>{" "}
+              </NavLink>
+            </li>
+
+            {/* Payment History */}
+
+            <li>
+              <NavLink
+                className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                data-tip="Payment-History"
+                to="/dashboard/payment-history"
+              >
+                {" "}
+                <FaCreditCard  className="my-1.5 inline-block size-4" />
                 <span className="is-drawer-close:hidden ">
-                  My Parcels
+                  Payment History{" "}
                 </span>{" "}
               </NavLink>
             </li>
