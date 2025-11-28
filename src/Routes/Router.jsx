@@ -50,6 +50,7 @@ const router = createBrowserRouter([
             <Rider />
           </PrivateRoute>
         ),
+        loader: () => fetch("/serviceCentres.json").then((res) => res.json()),
       },
     ],
   },
@@ -66,34 +67,37 @@ const router = createBrowserRouter([
         Component: Register,
       },
     ],
-  }, {
-    path: 'dashboard',
-    element: <PrivateRoute>
-      <DashBoardLayout></DashBoardLayout>
-    </PrivateRoute>,
+  },
+  {
+    path: "dashboard",
+    element: (
+      <PrivateRoute>
+        <DashBoardLayout></DashBoardLayout>
+      </PrivateRoute>
+    ),
     children: [
       {
-        path: 'my-parcels',
-        Component: MyParcels 
+        path: "my-parcels",
+        Component: MyParcels,
       },
       {
-        path: 'payment/:parcelId',
-        Component: Payment
+        path: "payment/:parcelId",
+        Component: Payment,
       },
       {
-        path: 'payment-history',
-        Component: PaymentHistory
+        path: "payment-history",
+        Component: PaymentHistory,
       },
       {
-        path: 'payment-success',
-        Component: PaymentSuccess
+        path: "payment-success",
+        Component: PaymentSuccess,
       },
       {
-        path: 'payment-cancelled',
-        Component: PaymentCancelled
-      }
-    ]
-  }
+        path: "payment-cancelled",
+        Component: PaymentCancelled,
+      },
+    ],
+  },
 ]);
 
 export default router;

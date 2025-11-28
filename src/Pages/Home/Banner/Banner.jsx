@@ -6,6 +6,7 @@ import { FiArrowUpRight } from "react-icons/fi";
 import bannerImg1 from "../../../assets/banner/banner1.png";
 import bannerImg2 from "../../../assets/banner/banner2.png";
 import bannerImg3 from "../../../assets/banner/banner3.png";
+import { Link } from "react-router";
 
 const Banner = () => {
   return (
@@ -65,16 +66,18 @@ const Banner = () => {
         </button>
 
         {/* Be A Rider */}
-        <button
-          className="
+        <Link to='/rider' >
+          <button
+            className="
             px-6 py-3 rounded-full border border-gray-400 text-gray-700 font-medium
             hover:bg-gray-100 transition-all cursor-pointer
 
             sm:px-4 sm:py-2 sm:text-sm
           "
-        >
-          Be A Rider
-        </button>
+          >
+            Be A Rider
+          </button>
+        </Link>
       </div>
     </div>
   );
