@@ -76,6 +76,7 @@ const MyParcels = () => {
               <th>Name</th>
               <th>Cost</th>
               <th>Payment Status</th>
+              <th>Tracking ID</th>
               <th>Delivery Status</th>
               <th>Actions</th>
             </tr>
@@ -98,7 +99,8 @@ const MyParcels = () => {
                     </button>
                   )}
                 </td>
-                <td>{parcel.deliveryStatus}</td>
+                <td>{parcel.trackingId}</td>
+                <td className="text-green-800" >{parcel.deliveryStatus}</td>
                 <td className="gap-2 flex">
                   <button className="btn btn-square hover:bg-primary">
                     <FiEdit />

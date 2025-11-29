@@ -1,13 +1,12 @@
 import React from "react";
 import { FaHome, FaMotorcycle, FaUsers } from "react-icons/fa";
 import { FaCreditCard } from "react-icons/fa6";
-import { TbTruckDelivery } from "react-icons/tb";
+import { TbBikeFilled, TbTruckDelivery } from "react-icons/tb";
 
 import { Link, NavLink, Outlet } from "react-router";
 import useRole from "../Hooks/useRole";
 
 const DashBoardLayout = () => {
-
   const { role } = useRole();
 
   return (
@@ -107,6 +106,19 @@ const DashBoardLayout = () => {
                     <FaMotorcycle className="my-1.5 inline-block size-4" />
                     <span className="is-drawer-close:hidden ">
                       Approve Riders{" "}
+                    </span>{" "}
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    data-tip="Assign Riders"
+                    to="/dashboard/assign-riders"
+                  >
+                    {" "}
+                    <TbBikeFilled className="my-1.5 inline-block size-4" />
+                    <span className="is-drawer-close:hidden ">
+                      Assign Riders{" "}
                     </span>{" "}
                   </NavLink>
                 </li>
