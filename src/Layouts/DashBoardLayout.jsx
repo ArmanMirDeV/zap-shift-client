@@ -1,5 +1,5 @@
 import React from "react";
-import { FaHome, FaMotorcycle } from "react-icons/fa";
+import { FaHome, FaMotorcycle, FaUsers } from "react-icons/fa";
 import { FaCreditCard } from "react-icons/fa6";
 import { TbTruckDelivery } from "react-icons/tb";
 
@@ -85,7 +85,7 @@ const DashBoardLayout = () => {
                 to="/dashboard/payment-history"
               >
                 {" "}
-                <FaCreditCard  className="my-1.5 inline-block size-4" />
+                <FaCreditCard className="my-1.5 inline-block size-4" />
                 <span className="is-drawer-close:hidden ">
                   Payment History{" "}
                 </span>{" "}
@@ -98,9 +98,22 @@ const DashBoardLayout = () => {
                 to="/dashboard/approve-riders"
               >
                 {" "}
-                <FaMotorcycle  className="my-1.5 inline-block size-4" />
+                <FaMotorcycle className="my-1.5 inline-block size-4" />
                 <span className="is-drawer-close:hidden ">
                   Approve Riders{" "}
+                </span>{" "}
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                data-tip="Users Management"
+                to="/dashboard/users-management"
+              >
+                {" "}
+                <FaUsers className="my-1.5 inline-block size-4" />
+                <span className="is-drawer-close:hidden ">
+                  Users Management{" "}
                 </span>{" "}
               </NavLink>
             </li>

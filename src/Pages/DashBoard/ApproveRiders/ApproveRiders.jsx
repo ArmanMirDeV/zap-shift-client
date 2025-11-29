@@ -1,12 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
+import React, { useState } from "react";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import { FiUserCheck } from "react-icons/fi";
 import { FaTrashAlt, FaUserTimes } from "react-icons/fa";
+import { AiOutlineEye } from "react-icons/ai";
 import Swal from "sweetalert2";
 
 const ApproveRiders = () => {
   const axiosSecure = useAxiosSecure();
+
+  const [selectedRider, setSelectedRider] = useState(null); // modal
 
   const { refetch, data: riders = [] } = useQuery({
     queryKey: ["riders", "pending"],
@@ -16,11 +19,12 @@ const ApproveRiders = () => {
     },
   });
 
+  // Approve
   const handleApproval = (rider) => {
-    const updateInfo = { status: "Approved" , email: rider.email};
+    const updateInfo = { status: "Approved", email: rider.email };
     axiosSecure.patch(`/riders/${rider._id}`, updateInfo).then((res) => {
-        if (res.data.modifiedCount) {
-            refetch();
+      if (res.data.modifiedCount) {
+        refetch();
         Swal.fire({
           position: "top-end",
           icon: "success",
@@ -28,10 +32,12 @@ const ApproveRiders = () => {
           showConfirmation: false,
           timer: 2000,
         });
+        setSelectedRider(null);
       }
     });
   };
 
+  // Decline
   const handleDecline = async (rider) => {
     try {
       const res = await axiosSecure.patch(`/riders/${rider._id}`, {
@@ -41,12 +47,14 @@ const ApproveRiders = () => {
       if (res.data.modifiedCount) {
         refetch();
         Swal.fire("Declined!", "The rider has been declined.", "warning");
+        setSelectedRider(null);
       }
     } catch (err) {
       console.log(err);
     }
   };
 
+  // Trash
   const handleTrash = async (rider) => {
     try {
       const result = await Swal.fire({
@@ -68,6 +76,7 @@ const ApproveRiders = () => {
       if (res.data.modifiedCount) {
         refetch();
         Swal.fire("Trashed!", "The rider has been moved to trash.", "success");
+        setSelectedRider(null);
       }
     } catch (err) {
       console.log(err);
@@ -87,27 +96,10 @@ const ApproveRiders = () => {
             <tr>
               <th>#</th>
               <th>Status</th>
-
               <th>Full Name</th>
               <th>Email</th>
               <th>Phone</th>
-              <th>Address</th>
-              <th>Region</th>
-              <th>District</th>
-              <th>NID</th>
-              <th>License</th>
-              <th>License Expiry</th>
-              <th>Vehicle Type</th>
-              <th>Bike Model</th>
-              <th>Bike Reg</th>
-              <th>Insurance</th>
-              <th>Emergency Name</th>
-              <th>Emergency Phone</th>
-              <th>Availability</th>
-              <th>Night Shift</th>
-              <th>Bank Name</th>
-              <th>Bank Account</th>
-              <th>Mobile Banking</th>
+              <th>Actions</th>
             </tr>
           </thead>
 
@@ -116,80 +108,131 @@ const ApproveRiders = () => {
               <tr key={rider._id} className="hover:bg-gray-100">
                 <th>{index + 1}</th>
 
-                <td className="text-center">
-                  {/* Status Badge (Only visible when status !== pending) */}
-                  {rider.status !== "pending" && (
-                    <p
-                      className={`px-3 py-1 font-bold text-center rounded inline-block mb-2 ${
-                        rider.status === "Approved"
-                          ? "bg-green-100 text-green-700"
-                          : rider.status === "Declined"
-                          ? "bg-yellow-100 text-yellow-700"
-                          : "bg-red-100 text-red-700"
-                      }
-      `}
-                    >
-                      {rider.status}
-                    </p>
-                  )}
-
-                  {/* Actions - Only show when rider is pending */}
-                  {rider.status === "pending" && (
-                    <div className="flex gap-2 justify-center mt-2">
-                      <button
-                        onClick={() => handleApproval(rider)}
-                        className="btn btn-sm hover:bg-green-600 rounded-full"
-                        title="Approve"
-                      >
-                        <FiUserCheck />
-                      </button>
-
-                      <button
-                        onClick={() => handleDecline(rider)}
-                        className="btn btn-sm hover:bg-yellow-600 rounded-full"
-                        title="Decline"
-                      >
-                        <FaUserTimes />
-                      </button>
-
-                      <button
-                        onClick={() => handleTrash(rider)}
-                        className="btn btn-sm hover:bg-red-600 rounded-full"
-                        title="Trash"
-                      >
-                        <FaTrashAlt />
-                      </button>
-                    </div>
-                  )}
+                <td>
+                  <span
+                    className={`px-3 py-1 rounded font-semibold text-sm ${
+                      rider.status === "Approved"
+                        ? "bg-green-100 text-green-700"
+                        : rider.status === "pending"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : "bg-red-100 text-red-700"
+                    }
+    `}
+                  >
+                    {rider.status}
+                  </span>
                 </td>
 
                 <td>{rider.fullName}</td>
                 <td>{rider.email}</td>
                 <td>{rider.phone}</td>
+
                 <td>
-                  {rider.address}, {rider.postCode}
+                  <button
+                    onClick={() => setSelectedRider(rider)}
+                    className="btn btn-sm bg-blue-500 text-white hover:bg-blue-700"
+                  >
+                    <AiOutlineEye size={18} /> View
+                  </button>
                 </td>
-                <td>{rider.region}</td>
-                <td>{rider.district}</td>
-                <td>{rider.nid}</td>
-                <td>{rider.license}</td>
-                <td>{rider.licenseExpiry}</td>
-                <td>{rider.vehicleType}</td>
-                <td>{rider.bikeModel}</td>
-                <td>{rider.bikeReg}</td>
-                <td>{rider.insurance}</td>
-                <td>{rider.emergencyName}</td>
-                <td>{rider.emergencyPhone}</td>
-                <td>{rider.availability}</td>
-                <td>{rider.nightShift}</td>
-                <td>{rider.bankName}</td>
-                <td>{rider.bankAccount}</td>
-                <td>{rider.mobileBanking}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {/* MODAL */}
+      {selectedRider && (
+        <div className="fixed inset-0  bg-opacity-30 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white w-full max-w-2xl p-6 rounded shadow-lg overflow-y-auto max-h-[80vh]">
+            <h2 className="text-2xl font-bold mb-4">
+              Rider Details – {selectedRider.fullName}
+            </h2>
+
+            <div className="grid grid-cols-2 gap-3">
+              <p>
+                <b>Email:</b> {selectedRider.email}
+              </p>
+              <p>
+                <b>Phone:</b> {selectedRider.phone}
+              </p>
+              <p>
+                <b>Address:</b> {selectedRider.address}
+              </p>
+              <p>
+                <b>Region:</b> {selectedRider.region}
+              </p>
+              <p>
+                <b>District:</b> {selectedRider.district}
+              </p>
+              <p>
+                <b>NID:</b> {selectedRider.nid}
+              </p>
+              <p>
+                <b>License:</b> {selectedRider.license}
+              </p>
+              <p>
+                <b>Bike Model:</b> {selectedRider.bikeModel}
+              </p>
+              <p>
+                <b>Bike Reg:</b> {selectedRider.bikeReg}
+              </p>
+              <p>
+                <b>Insurance:</b> {selectedRider.insurance}
+              </p>
+              <p>
+                <b>Emergency:</b> {selectedRider.emergencyName}
+              </p>
+              <p>
+                <b>Emergency Phone:</b> {selectedRider.emergencyPhone}
+              </p>
+              <p>
+                <b>Availability:</b> {selectedRider.availability}
+              </p>
+              <p>
+                <b>Night Shift:</b> {selectedRider.nightShift}
+              </p>
+              <p>
+                <b>Bank:</b> {selectedRider.bankName}
+              </p>
+              <p>
+                <b>Account:</b> {selectedRider.bankAccount}
+              </p>
+            </div>
+
+            {/* ACTION BUTTONS */}
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => handleApproval(selectedRider)}
+                className="btn bg-green-600 text-white"
+              >
+                <FiUserCheck /> Approve
+              </button>
+
+              <button
+                onClick={() => handleDecline(selectedRider)}
+                className="btn bg-yellow-600 text-white"
+              >
+                <FaUserTimes /> Decline
+              </button>
+
+              <button
+                onClick={() => handleTrash(selectedRider)}
+                className="btn bg-red-600 text-white"
+              >
+                <FaTrashAlt /> Trash
+              </button>
+
+              <button
+                onClick={() => setSelectedRider(null)}
+                className="btn bg-gray-600 text-white"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
