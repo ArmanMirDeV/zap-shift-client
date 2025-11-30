@@ -95,7 +95,8 @@ const ApproveRiders = () => {
           <thead className="bg-gray-200 text-gray-900">
             <tr>
               <th>#</th>
-              <th>Status</th>
+              <th>Application Status</th>
+              <th>Work Status</th>
               <th>Full Name</th>
               <th>Email</th>
               <th>Phone</th>
@@ -122,7 +123,7 @@ const ApproveRiders = () => {
                     {rider.status}
                   </span>
                 </td>
-
+                <td>{rider.workStatus}</td>
                 <td>{rider.fullName}</td>
                 <td>{rider.email}</td>
                 <td>{rider.phone}</td>
