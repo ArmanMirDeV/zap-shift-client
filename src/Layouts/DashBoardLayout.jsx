@@ -1,5 +1,5 @@
 import React from "react";
-import { FaHome, FaMotorcycle, FaUsers } from "react-icons/fa";
+import { FaHome, FaMotorcycle, FaTasks, FaUsers } from "react-icons/fa";
 import { FaCreditCard } from "react-icons/fa6";
 import { TbBikeFilled, TbTruckDelivery } from "react-icons/tb";
 
@@ -94,6 +94,27 @@ const DashBoardLayout = () => {
                 </span>{" "}
               </NavLink>
             </li>
+
+            {role === "rider" && (
+              <>
+                <li>
+                  <NavLink
+                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    data-tip="Assigned Deliveries"
+                    to="/dashboard/assigned-deliveries"
+                  >
+                    {" "}
+                    <FaTasks className="my-1.5 inline-block size-4" />
+                    <span className="is-drawer-close:hidden ">
+                      Assigned Deliveries{" "}
+                    </span>{" "}
+                  </NavLink>
+                </li>
+              </>
+            )}
+
+            {/* Admin Only Routes */}
+
             {role === "admin" && (
               <>
                 <li>
