@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 const CompletedDeliveries = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
-  const { data: parcels = [], refetch } = useQuery({
+  const { data: parcels = [],  } = useQuery({
     queryKey: ["parcels", user.email, "driver_assigned"],
     queryFn: async () => {
       const res = await axiosSecure.get(
@@ -37,10 +37,10 @@ const CompletedDeliveries = () => {
               <th>Sender</th>
               <th>Receiver</th>
               <th>Cost</th>
-              <th>Payout</th>
               <th>Pickup District</th>
               <th>Created At</th>
               <th>Status</th>
+              <th>Payout</th>
               <th>Cash out</th>
             </tr>
           </thead>
@@ -75,10 +75,6 @@ const CompletedDeliveries = () => {
                 <td>
                   <div className="font-bold text-gray-800">$ {parcel.cost}</div>
                 </td>
-                {/*Payout  Cost */}
-                <td>
-                  <div className="font-bold text-gray-800">$ {calculatePayout(parcel)}</div>
-                </td>
 
                 {/* Parcel Pickup district */}
                 <td>
@@ -107,6 +103,12 @@ const CompletedDeliveries = () => {
                   >
                     {parcel.deliveryStatus.replace("-", " ")}
                   </span>
+                </td>
+                {/*Payout  Cost */}
+                <td>
+                  <div className="font-bold text-gray-800">
+                    $ {calculatePayout(parcel)}
+                  </div>
                 </td>
 
                 {/* Action Button */}
