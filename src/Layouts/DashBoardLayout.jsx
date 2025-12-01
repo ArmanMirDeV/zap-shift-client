@@ -2,6 +2,7 @@ import React from "react";
 import { FaHome, FaMotorcycle, FaTasks, FaUsers } from "react-icons/fa";
 import { FaCreditCard } from "react-icons/fa6";
 import { TbBikeFilled, TbTruckDelivery } from "react-icons/tb";
+import { MdOutlineTaskAlt } from "react-icons/md";
 
 import { Link, NavLink, Outlet } from "react-router";
 import useRole from "../Hooks/useRole";
@@ -107,6 +108,19 @@ const DashBoardLayout = () => {
                     <FaTasks className="my-1.5 inline-block size-4" />
                     <span className="is-drawer-close:hidden ">
                       Assigned Deliveries{" "}
+                    </span>{" "}
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    data-tip="Completed Deliveries"
+                    to="/dashboard/completed-deliveries"
+                  >
+                    {" "}
+                    <MdOutlineTaskAlt className="my-1.5 inline-block size-4" />
+                    <span className="is-drawer-close:hidden ">
+                      Completed Deliveries{" "}
                     </span>{" "}
                   </NavLink>
                 </li>
