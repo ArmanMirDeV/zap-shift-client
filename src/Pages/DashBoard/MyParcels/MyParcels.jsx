@@ -66,7 +66,9 @@ const MyParcels = () => {
 
   return (
     <div>
-      <h2 className="text-3xl text-secondary p-4 font-bold" >All of my parcels: {parcels.length} </h2>
+      <h2 className="text-3xl text-secondary p-4 font-bold">
+        All of my parcels: {parcels.length}{" "}
+      </h2>
       <div className="overflow-x-auto">
         <table className="table table-zebra">
           {/* head */}
@@ -99,8 +101,10 @@ const MyParcels = () => {
                     </button>
                   )}
                 </td>
-                <td>{parcel.trackingId}</td>
-                <td className="text-green-800" >{parcel.deliveryStatus}</td>
+                <td>
+                  <Link className="text-green-500 hover:text-red-600 " to={`/parcel-track/${parcel.trackingId}`}>{parcel.trackingId}</Link>
+                </td>
+                <td className="text-green-800">{parcel.deliveryStatus}</td>
                 <td className="gap-2 flex">
                   <button className="btn btn-square hover:bg-primary">
                     <FiEdit />
