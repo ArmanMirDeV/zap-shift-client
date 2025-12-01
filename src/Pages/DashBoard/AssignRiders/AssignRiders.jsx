@@ -1,12 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import Swal from "sweetalert2";
 
 const AssignRiders = () => {
+  const [selectedParcel, setSelectedParcel] = useState(null);
   const axiosSecure = useAxiosSecure();
-  const riderModalRef = useRef()
+  const riderModalRef = useRef();
 
-  const { data: parcels = [] } = useQuery({
+  const { data: parcels = [], refetch: parcelsRefetch } = useQuery({
     queryKey: ["parcels", "pending-pickup"],
     queryFn: async () => {
       const res = await axiosSecure.get(
@@ -16,14 +18,50 @@ const AssignRiders = () => {
     },
   });
 
-  const openAssignRiderModal = (parcel) => {
-    
 
+  // todo: invalidate query after assigning a rider
+
+
+  const { data: riders = [] } = useQuery({
+    queryKey: ["riders", selectedParcel?.senderDistrict, "available"],
+    enabled: !!selectedParcel,
+    queryFn: async () => {
+      const res = await axiosSecure.get(
+        `/riders?status=Approved&district=${selectedParcel?.senderDistrict}&workStatus=available`
+      );
+
+      return res.data;
+    },
+  });
+
+  const openAssignRiderModal = (parcel) => {
+    setSelectedParcel(parcel);
     riderModalRef.current.showModal();
-    
   };
 
-
+  const handleAssignRider = (rider) => {
+    const riderAssignInfo = {
+      riderId: rider._id,
+      riderEmail: rider.email,
+      riderName: rider.fullName,
+      parcelId: selectedParcel?._id,
+    };
+    axiosSecure
+      .patch(`/parcels/${selectedParcel._id}`, riderAssignInfo)
+      .then((res) => {
+        if (res.data.modifiedCount) {
+          riderModalRef.current.close();
+          parcelsRefetch();
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Rider Assigned Successfully",
+            showConfirmation: false,
+            timer: 1500,
+          });
+        }
+      });
+  };
 
   return (
     <div className="p-6">
@@ -110,9 +148,9 @@ const AssignRiders = () => {
                 <td>
                   <button
                     onClick={() => openAssignRiderModal(parcel)}
-                    className="px-4 py-2 bg-primary text-black text-sm rounded-lg shadow hover:text-white hover:bg-secondary transition-all"
+                    className="px-4 py-2 bg-primary text-black text-sm rounded-lg cursor-pointer shadow hover:text-white hover:bg-secondary transition-all"
                   >
-                    Assign Rider
+                    Find Riders
                   </button>
                 </td>
               </tr>
@@ -129,13 +167,45 @@ const AssignRiders = () => {
         </table>
       </div>
 
-    
-      <dialog ref={riderModalRef} className="modal modal-bottom sm:modal-middle">
+      <dialog
+        ref={riderModalRef}
+        className="modal modal-bottom sm:modal-middle"
+      >
         <div className="modal-box">
-          <h3 className="font-bold text-lg">Hello!</h3>
-          <p className="py-4">
-            Press ESC key or click the button below to close
-          </p>
+          <h3 className="font-bold text-lg">Riders: {riders.length}!</h3>
+          <p className="py-4">Please Select a Rider</p>
+
+          <div className="overflow-x-auto">
+            <table className="table table-zebra">
+              {/* head */}
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Favorite Color</th>
+                </tr>
+              </thead>
+              <tbody>
+                {riders.map((rider, index) => (
+                  <tr key={index}>
+                    <th>{index + 1}</th>
+                    <td>{rider.fullName}</td>
+                    <td>{rider.email}</td>
+                    <td>
+                      <button
+                        onClick={() => handleAssignRider(rider)}
+                        className=" btn btn-primary text-black "
+                      >
+                        Assign
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
           <div className="modal-action">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
@@ -149,4 +219,3 @@ const AssignRiders = () => {
 };
 
 export default AssignRiders;
-
