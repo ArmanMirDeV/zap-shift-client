@@ -6,6 +6,7 @@ import { MdOutlineTaskAlt } from "react-icons/md";
 
 import { Link, NavLink, Outlet } from "react-router";
 import useRole from "../Hooks/useRole";
+import logoImg from "../assets/logo.png";
 
 const DashBoardLayout = () => {
   const { role } = useRole();
@@ -55,6 +56,11 @@ const DashBoardLayout = () => {
             {/* List item */}
             <li>
               <Link to="/">
+                <img src={logoImg} alt="logoImg" />
+              </Link>
+            </li>
+            <li>
+              <Link to="/dashboard">
                 <button
                   className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
                   data-tip="Homepage"

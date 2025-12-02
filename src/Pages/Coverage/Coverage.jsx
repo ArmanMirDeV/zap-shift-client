@@ -25,7 +25,7 @@ const Coverage = () => {
   };
 
   return (
-    <div>
+    <div className="p-8">
       <h2 className="mt-8 text-5xl text-secondary">
         We are available in 64 Districts
       </h2>
