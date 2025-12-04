@@ -1,6 +1,8 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import { Legend, Pie, PieChart, Tooltip } from "recharts";
+
 
 const AdminDashBoardHome = () => {
   const axiosSecure = useAxiosSecure();
@@ -16,6 +18,19 @@ const AdminDashBoardHome = () => {
       return res.data;
     },
   });
+
+
+
+  const getPieChartData = data => {
+    return data.map(item => {
+    return {
+      name: item.status,
+      value: item.count,
+    };
+    })
+  }
+
+
 
   return (
     <div className="p-6">
@@ -69,13 +84,42 @@ const AdminDashBoardHome = () => {
                 {stat.count}
               </div>
 
-              <div className="stat-desc text-sm opacity-80">
-               Description
-              </div>
+              <div className="stat-desc text-sm opacity-80">Description</div>
             </div>
           ))}
         </div>
       )}
+
+      {/* Pie Chart */}
+
+      <div className="w-[600px] mx-auto border-2 border-secondary flex items-center justify-center bg-amber-50 rounded-4xl mt-20 h-[400px]">
+        <PieChart
+          style={{
+            width: "100%",
+            maxWidth: "500px",
+            maxHeight: "80vh",
+            aspectRatio: 2,
+          }}
+          responsive
+        >
+          <Pie
+            dataKey="value"
+            startAngle={180}
+            endAngle={0}
+            data={getPieChartData(deliveryStats)}
+            cx="50%"
+            cy="100%"
+            outerRadius="120%"
+            fill="#8884d8"
+            label
+            isAnimationActive={true}
+          />
+          <Legend>
+
+          </Legend>
+          <Tooltip></Tooltip>
+        </PieChart>
+      </div>
     </div>
   );
 };
